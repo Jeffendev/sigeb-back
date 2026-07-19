@@ -1,3 +1,8 @@
+-- =====================================================
+-- V1 - Crear tablas de seguridad
+-- Módulo: Seguridad
+-- =====================================================
+
 CREATE TABLE rol (
 
                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -8,9 +13,9 @@ CREATE TABLE rol (
 
                      activo BOOLEAN NOT NULL DEFAULT TRUE,
 
-                     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-                     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                     fecha_actualizacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                          ON UPDATE CURRENT_TIMESTAMP
 
 );
@@ -25,13 +30,21 @@ CREATE TABLE usuario (
 
                          correo VARCHAR(150) NOT NULL UNIQUE,
 
+                         nombres VARCHAR(100) NOT NULL,
+
+                         apellidos VARCHAR(100) NOT NULL,
+
+                         telefono VARCHAR(20),
+
+                         documento VARCHAR(30) UNIQUE,
+
                          activo BOOLEAN NOT NULL DEFAULT TRUE,
 
                          ultimo_acceso TIMESTAMP NULL,
 
-                         fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-                         fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                         fecha_actualizacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                              ON UPDATE CURRENT_TIMESTAMP,
 
                          rol_id BIGINT NOT NULL,
@@ -47,3 +60,9 @@ CREATE INDEX idx_usuario_username
 
 CREATE INDEX idx_usuario_correo
     ON usuario(correo);
+
+CREATE INDEX idx_usuario_documento
+    ON usuario(documento);
+
+CREATE INDEX idx_usuario_rol
+    ON usuario(rol_id);
