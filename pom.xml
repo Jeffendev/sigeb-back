@@ -11,9 +11,14 @@
 	<groupId>com.jeffry</groupId>
 	<artifactId>SIGEP</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
+
+	<name>SIGEP</name>
+
+	<description>
+		Sistema Integral de Gestión Escolar con Plataforma de Pagos
+	</description>
+
+	<url>https://github.com/Jeffendev/sigeb-back</url>
 	<licenses>
 		<license/>
 	</licenses>
@@ -21,10 +26,10 @@
 		<developer/>
 	</developers>
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:https://github.com/Jeffendev/sigeb-back.git</connection>
+		<developerConnection>scm:git:https://github.com/Jeffendev/sigeb-back.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/Jeffendev/sigeb-back</url>
 	</scm>
 	<properties>
 		<java.version>21</java.version>
@@ -58,11 +63,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -121,11 +121,25 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- MapStruct — mapper automático -->
+		<!-- MapStruct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.3</version>
+		</dependency>
+
+		<!-- Procesador de MapStruct -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>1.6.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--h2-para pruebas-->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -146,39 +160,30 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<annotationProcessorPaths>
-								<path>
-									<groupId>org.projectlombok</groupId>
-									<artifactId>lombok</artifactId>
-								</path>
-							</annotationProcessorPaths>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<annotationProcessorPaths>
-								<path>
-									<groupId>org.projectlombok</groupId>
-									<artifactId>lombok</artifactId>
-								</path>
-							</annotationProcessorPaths>
-						</configuration>
-					</execution>
-				</executions>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.13.0</version>
+
+					<configuration>
+
+						<release>21</release>
+
+						<annotationProcessorPaths>
+
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>1.18.42</version>
+							</path>
+
+							<path>
+								<groupId>org.mapstruct</groupId>
+								<artifactId>mapstruct-processor</artifactId>
+								<version>1.6.3</version>
+							</path>
+
+						</annotationProcessorPaths>
+
+					</configuration>
 			</plugin>
 		</plugins>
 	</build>
