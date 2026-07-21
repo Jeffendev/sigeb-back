@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.jeffry.sigep.rol.entity.Rol;
 import com.jeffry.sigep.usuario.entity.Usuario;
 
+import com.jeffry.sigep.common.exception.BadRequestException;
+import com.jeffry.sigep.common.exception.ResourceNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -27,17 +30,25 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         // Verificar que el username no exista
         if (usuarioRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("El nombre de usuario ya existe");
+            throw new BadRequestException("El nombre de usuario ya existe");
         }
 
         // Verificar que el correo no exista
         if (usuarioRepository.existsByCorreo(request.getCorreo())) {
-            throw new RuntimeException("El correo ya está registrado");
+            throw new BadRequestException("El correo ya está registrado");
+        }
+
+        // Verificar que el documento no exista
+        if (request.getDocumento() != null &&
+                usuarioRepository.existsByDocumento(request.getDocumento())) {
+
+            throw new BadRequestException("El documento ya está registrado");
         }
 
         // Buscar el rol
         Rol rol = rolRepository.findById(request.getRolId())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Rol no encontrado"));
 
         // Convertir DTO a entidad
         Usuario usuario = usuarioMapper.toEntity(request);
@@ -48,15 +59,19 @@ public class UsuarioServiceImpl implements UsuarioService {
         // Guardar en la base de datos
         usuario = usuarioRepository.save(usuario);
 
-        // Convertir la entidad a ResponseDTO
+        // Convertir a ResponseDTO
         return usuarioMapper.toResponse(usuario);
     }
 
     @Override
     public List<UsuarioResponseDTO> listar() {
-        return List.of();
-    }
 
+        return usuarioRepository.findAll()
+                .stream()
+                .map(usuarioMapper::toResponse)
+                .toList();
+
+    }
     @Override
     public UsuarioResponseDTO buscarPorId(Long id) {
         return null;
