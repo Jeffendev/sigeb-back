@@ -4,6 +4,7 @@ import com.jeffry.sigep.usuario.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,5 +39,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * Verifica si existe un usuario con ese documento.
      */
     boolean existsByDocumento(String documento);
+
+    List<Usuario> findByActivoTrue();
+    Optional<Usuario> findByIdAndActivoTrue(Long id);
 
 }

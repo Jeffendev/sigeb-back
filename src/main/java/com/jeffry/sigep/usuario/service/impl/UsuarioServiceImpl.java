@@ -66,24 +66,84 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public List<UsuarioResponseDTO> listar() {
 
-        return usuarioRepository.findAll()
+        return usuarioRepository.findByActivoTrue()
                 .stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
 
     }
+
     @Override
     public UsuarioResponseDTO buscarPorId(Long id) {
-        return null;
+
+        Usuario usuario = usuarioRepository.findByIdAndActivoTrue(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+
+        return usuarioMapper.toResponse(usuario);
     }
 
     @Override
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO request) {
-        return null;
+
+        // Buscar el usuario activo
+        Usuario usuario = usuarioRepository.findByIdAndActivoTrue(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+
+        // Validar username
+        if (!usuario.getUsername().equals(request.getUsername())
+                && usuarioRepository.existsByUsername(request.getUsername())) {
+
+            throw new BadRequestException("El nombre de usuario ya existe");
+        }
+
+        // Validar correo
+        if (!usuario.getCorreo().equals(request.getCorreo())
+                && usuarioRepository.existsByCorreo(request.getCorreo())) {
+
+            throw new BadRequestException("El correo ya está registrado");
+        }
+
+        // Validar documento
+        if (request.getDocumento() != null
+                && !request.getDocumento().equals(usuario.getDocumento())
+                && usuarioRepository.existsByDocumento(request.getDocumento())) {
+
+            throw new BadRequestException("El documento ya está registrado");
+        }
+
+        // Buscar el rol
+        Rol rol = rolRepository.findById(request.getRolId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Rol no encontrado"));
+
+        // Actualizar datos
+        usuario.setUsername(request.getUsername());
+        usuario.setPassword(request.getPassword());
+        usuario.setCorreo(request.getCorreo());
+        usuario.setNombres(request.getNombres());
+        usuario.setApellidos(request.getApellidos());
+        usuario.setTelefono(request.getTelefono());
+        usuario.setDocumento(request.getDocumento());
+        usuario.setRol(rol);
+
+        // Guardar cambios
+        usuario = usuarioRepository.save(usuario);
+
+        // Retornar respuesta
+        return usuarioMapper.toResponse(usuario);
     }
 
     @Override
     public void eliminar(Long id) {
 
+        Usuario usuario = usuarioRepository.findByIdAndActivoTrue(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+
+        usuario.setActivo(false);
+
+        usuarioRepository.save(usuario);
     }
 }
